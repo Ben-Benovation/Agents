@@ -1,0 +1,14 @@
+# מערכת הפעלה
+.DS_Store
+Thumbs.db
+
+# סביבה וסודות
+.env
+.env.*
+*.key
+*.pem
+
+# לוגים וקבצים זמניים
+*.log
+tmp/
+.cache/
