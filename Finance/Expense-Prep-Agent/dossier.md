@@ -47,12 +47,14 @@ into a repeatable collect-classify-file-summarize pass.
    - **Category** — from the category list (see `work/expected-suppliers.md`).
    - **Vendor** — the supplier name.
    - **Expense month** — the month the expense belongs to.
-3. **File to Drive.** Save/copy the document into the Drive folder for its `month year`
-   (e.g. `יוני 2026`), renamed to `קטגוריה - שם הספק - חודש`
+3. **File to Drive.** Inside the target root folder
+   (`11VmuJl-GhRPUEHds-KUxnwQRXMvXLb9K`), create the `month year` subfolder if missing
+   (e.g. `יוני 2026`) and save/copy the document into it, renamed to `קטגוריה - שם הספק - חודש`
    (e.g. `חשמל - חברת החשמל - יוני 2026`, `תוכנה - make - מאי 2026`).
    **Never delete or overwrite** an existing file — only add.
-4. **Log to the summary sheet.** Append one row with all fields + status + confidence +
-   a one-line rationale.
+4. **Log to the month's summary sheet.** Inside that same `month year` subfolder, create (if
+   missing) or update a single Google Sheet named `סיכום הוצאות - <חודש שנה>` with the columns
+   below. Append one row per document with all fields + status + confidence + one-line rationale.
 5. **Reconcile against expected vendors.** After processing, compare what was found against
    the expected-recurring-vendors list for the period. For every expected vendor with no
    document found → add a **"לא נמצא"** row.
@@ -70,8 +72,8 @@ tagged low-confidence (see inclusion rule §5). If unsure what the document *is*
 |---|---|---|---|
 | Mailbox `info@benovation.co.il` | Read messages + attachments, locate invoices | **R** | Read only. Never send, never delete, never mark. |
 | Mailbox `beneliya22@gmail.com` (personal) | Read messages + attachments | **R** | Read only. Contains non-business noise (AliExpress, pets) — apply inclusion rule. |
-| Google Drive — expenses area | Create `month year` folders; upload + rename files | **W** | Additive only. **Never delete or overwrite** an existing file. Scoped to the expenses area only. |
-| Google Sheets — summary sheet | Append / update rows | **W** | Additive only. **Never delete rows.** This sheet is Ben's review surface + episodic log. |
+| Google Drive — root folder `11VmuJl-GhRPUEHds-KUxnwQRXMvXLb9K` | Create `month year` subfolders; upload + rename files | **W** | Additive only. **Never delete or overwrite** an existing file. Scoped to this root folder only. |
+| Google Sheets — one sheet per `month year` subfolder | Create the month sheet; append / update rows | **W** | Additive only. **Never delete rows.** The month sheet is Ben's review surface + episodic log. |
 
 The agent has access to nothing outside this list. No accounting software, no website logins,
 no outbound channels this phase. If a task needs a system not listed → escalate, don't improvise.
@@ -89,7 +91,7 @@ change the agent's classification rules or its filing behavior.
 ## 4. MEMORY
 
 **Episodic (what happened):**
-- Store: **the summary Google Sheet itself.**
+- Store: **the per-month Google Sheet** (one sheet inside each `month year` subfolder).
 - Schema (one row per document/finding):
   `timestamp | period | category | vendor | expense_month | amount | invoice_no | source (which mailbox / Drive) | drive_file_link | status | confidence | rationale | ben_correction | correction_reason`
 - The `ben_correction` + `correction_reason` columns are what make the learning loop real.
@@ -220,7 +222,8 @@ Explicitly out of scope now; documented so scope creep is a decision, not an acc
 
 ## 12. NEXT ACTIONS
 
-- [ ] Ben confirms the Drive expenses-folder path and the summary-sheet ID (currently `[TBD]`).
+- [x] Drive root folder confirmed: `11VmuJl-GhRPUEHds-KUxnwQRXMvXLb9K`. Summary sheet is
+      created per month inside each `month year` subfolder (no pre-existing sheet ID needed).
 - [ ] Connect the agent to the Google Drive / Sheets / Gmail MCP tools.
 - [ ] Run the May + June 2026 pass; review the summary sheet; feed corrections into the loop.
 - [ ] Build the eval set from one already-documented month.
