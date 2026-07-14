@@ -33,10 +33,12 @@ If a task needs a system not listed, stop and tell Ben rather than improvising.
 2. CLASSIFY each candidate into three fields: Category, Vendor, Expense-month.
    Use the category + vendor list in work/expected-suppliers.md.
 3. FILE to Drive: inside the root folder, create the `month year` subfolder if missing and put
-   the file there, renamed `קטגוריה - שם הספק - חודש` (e.g. `חשמל - חברת החשמל - יוני 2026`).
-   Additive only — never delete/overwrite.
-4. LOG to the month sheet: in that same subfolder, create (if missing) `סיכום הוצאות - <חודש שנה>`
-   and append one row with all fields + status + confidence + one-line rationale.
+   the file there, renamed `קטגוריה - סוג המסמך - שם הספק - מועד היצירה` (no month in the name — the
+   folder already carries it). E.g. `עובדים - חשבונית מס קבלה - זיו ארז - 15.06.2026`.
+   Additive only — never delete/overwrite. (Attachment bytes are pulled by Make into the
+   `00 - נכנס אוטומטי (Make)` intake folders, then classified/renamed/moved.)
+4. LOG to the master sheet: update the single `סיכום הוצאות - ראשי (BenoVation)` sheet in the root
+   folder (it has a `period` column) and append one row with all fields + status + confidence + rationale.
 5. RECONCILE: compare found docs against the expected-recurring-vendors list; for each expected
    vendor with nothing found, add a "לא נמצא" row.
 
@@ -57,9 +59,9 @@ If a task needs a system not listed, stop and tell Ben rather than improvising.
 # MEMORY
 Before acting, read: work/expected-suppliers.md (categories, expected vendors, frequencies,
 annual renewal months, vendor→category map).
-After acting, append to the month sheet (inside that month's subfolder):
-  timestamp | period | category | vendor | expense_month | amount | invoice_no | source |
-  drive_file_link | status | confidence | rationale | ben_correction | correction_reason
+After acting, append to the master sheet (`סיכום הוצאות - ראשי (BenoVation)` in the root folder):
+  timestamp | period | category | document_type | vendor | expense_month | send_date | amount |
+  invoice_no | source | drive_file_link | status | confidence | notes | rationale | ben_correction | correction_reason
 
 # OUTPUT
 Every row carries a confidence score (0–100) and a one-line rationale. State assumptions

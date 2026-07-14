@@ -1,6 +1,6 @@
 # Role Dossier — `Expense-Prep-Agent`
 
-**Version:** 0.1
+**Version:** 0.2
 **Hired by:** BenoVation (internal — Ben)
 **Date:** 2026-07-14
 **Status:** Probation (collect-with-supervision)
@@ -49,12 +49,16 @@ into a repeatable collect-classify-file-summarize pass.
    - **Expense month** — the month the expense belongs to.
 3. **File to Drive.** Inside the target root folder
    (`11VmuJl-GhRPUEHds-KUxnwQRXMvXLb9K`), create the `month year` subfolder if missing
-   (e.g. `יוני 2026`) and save/copy the document into it, renamed to `קטגוריה - שם הספק - חודש`
-   (e.g. `חשמל - חברת החשמל - יוני 2026`, `תוכנה - make - מאי 2026`).
+   (e.g. `יוני 2026`) and save/copy the document into it, renamed to
+   `קטגוריה - סוג המסמך - שם הספק - מועד היצירה` (no month in the name — the folder already carries
+   the month). E.g. `עובדים - חשבונית מס קבלה - זיו ארז - 15.06.2026`, `תוכנה - קבלה - monday - 18.06.2026`.
    **Never delete or overwrite** an existing file — only add.
-4. **Log to the month's summary sheet.** Inside that same `month year` subfolder, create (if
-   missing) or update a single Google Sheet named `סיכום הוצאות - <חודש שנה>` with the columns
-   below. Append one row per document with all fields + status + confidence + one-line rationale.
+   *Byte transfer:* the agent's Gmail tool cannot fetch attachment bytes; the actual files are pulled
+   by **Make** into `00 - נכנס אוטומטי (Make) - <mailbox>` intake folders, then classified/renamed/moved.
+4. **Log to the master summary sheet.** Update the single Google Sheet in the root folder,
+   `סיכום הוצאות - ראשי (BenoVation)`, which carries a `period` (`תקופה`) column so every month lives
+   in one analyzable sheet. Append one row per document with all fields + status + confidence + rationale.
+   (v0.2 change from a per-month sheet, at Ben's request.)
 5. **Reconcile against expected vendors.** After processing, compare what was found against
    the expected-recurring-vendors list for the period. For every expected vendor with no
    document found → add a **"לא נמצא"** row.
@@ -91,9 +95,12 @@ change the agent's classification rules or its filing behavior.
 ## 4. MEMORY
 
 **Episodic (what happened):**
-- Store: **the per-month Google Sheet** (one sheet inside each `month year` subfolder).
+- Store: **the master Google Sheet** `סיכום הוצאות - ראשי (BenoVation)` in the root folder (v0.2 — one
+  sheet for all months, distinguished by the `period` column).
 - Schema (one row per document/finding):
-  `timestamp | period | category | vendor | expense_month | amount | invoice_no | source (which mailbox / Drive) | drive_file_link | status | confidence | rationale | ben_correction | correction_reason`
+  `timestamp | period | category | document_type | vendor | expense_month | send_date | amount | invoice_no | source | drive_file_link | status | confidence | notes | rationale | ben_correction | correction_reason`
+- New in v0.2: `document_type` (חשבון עסקה / חשבונית מס / קבלה / חשבונית מס-קבלה / חשבון-קבלה / סיכום תשלום),
+  `send_date` (email send date, separate column), `notes`.
 - The `ben_correction` + `correction_reason` columns are what make the learning loop real.
 
 **Semantic (what it knows) — human-editable, in `work/expected-suppliers.md`:**
