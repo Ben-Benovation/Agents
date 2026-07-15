@@ -59,14 +59,16 @@
 
 ## Make — משיכת קבצים (org: The Hair Straightening House / team 1860247, זמני)
 - חיבורים: Gmail info@ (`9015045`) · Gmail beneliya22 (`9015017`) · Google Drive (`9015057`).
-- תרחישים (Gmail v4 → List attachments → Drive upload, מסנן PDF/תמונה):
+- זרימה: **Search emails** (`executeEmailSearchQuery`, gmailSearch, on-demand) → List email attachments → Drive Upload, מסנן PDF/תמונה.
   - `6565161` — Expense Files — info@benovation → Drive
   - `6565167` — Expense Files — beneliya22 → Drive
-- לא פעילים עדיין — בן להפעיל ולבחור epoch (מ‑1.5.2026) ולוודא ריצה ראשונה.
+- **תיקון:** גרסה ראשונה השתמשה בטריגר polling (`triggerWatchNewEmails`) שהתעלם מ‑`before:/after:` ומשך מ‑2016.
+  הוחלף ל‑Search emails דטרמיניסטי (on-demand) שמכבד את תאריכי השאילתה. **אומת ע"י בן ✓** (מושך רק מאי–יוני).
+- להרצה: בן מריץ "Run once" לכל תרחיש → הקבצים נוחתים בתיקיות ה"נכנס" → הסוכן ממיין/משנה שם/מעביר לתיקיות החודש וממלא `drive_file_link`.
+- ⚠️ בתיקיית ה"נכנס" של info@ ייתכנו קובצי 2016 מהריצה השגויה הראשונה — לנקות (אין כלי מחיקה ב‑MCP).
 
 ## פתוחים
 - Meta ads (עשרות קבלות תוכן) — דילוג בהרצה זו; מנגנון קבלה מאוחדת בהקמה (אולי beneliya22).
 - ספקי כרטיס ללא קבלה במייל (make/ManyChat/Claude/Hetzner/חשמל/מים/HOT/Upay) — לאתר דרך beneliya22.
 - ערי מאי — לוודא קבלה/חשבונית מס.
 - ארנונה — לאמת מול בן (שולם מראש?).
-- אימות ב‑Make שהמרת data (base64→buffer) עוברת תקין בהרצה הראשונה.

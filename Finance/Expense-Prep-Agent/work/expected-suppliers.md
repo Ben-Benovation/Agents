@@ -145,7 +145,8 @@
 - לכלי ה‑Gmail של הסוכן אין הורדת מצורף; משיכת הקבצים בפועל נעשית ב‑**Make**:
   - `Expense Files — info@benovation → Drive` → תיקיית `00 - נכנס אוטומטי (Make) - info@`
   - `Expense Files — beneliya22 → Drive` → תיקיית `00 - נכנס אוטומטי (Make) - beneliya22`
-- זרימה: Watch/Search emails (v4) → List email attachments → Google Drive Upload. מסנן PDF/תמונה בלבד.
+- זרימה: **Search emails** (`executeEmailSearchQuery`, on-demand) → List email attachments → Google Drive Upload. מסנן PDF/תמונה בלבד.
+  (טריגר polling התעלם מתאריכי `before:/after:` — לכן משתמשים ב‑Search emails הדטרמיניסטי.)
 - הסוכן/בן מסווג, משנה שם ומעביר מתיקיית ה"נכנס" לתיקיית החודש.
 - קבלות שהן **קישור להורדה** (morning/invoice4u/grow/tranzila) או **תוכן בלבד** (Meta) לא נמשכות אוטומטית — טיפול ידני/מנגנון עתידי.
 
