@@ -1,8 +1,8 @@
 # Role Dossier — `Expense-Prep-Agent`
 
-**Version:** 0.2
+**Version:** 0.3
 **Hired by:** BenoVation (internal — Ben)
-**Date:** 2026-07-14
+**Date:** 2026-07-14 (v0.3: 2026-07-15)
 **Status:** Probation (collect-with-supervision)
 
 ---
@@ -186,6 +186,14 @@ only much later anything that logs into a site or pushes to Green Invoice.
 to Ben's real ones. Stored at `work/evals/` when built.
 
 ---
+
+## 8.5 v0.3 LEARNINGS (2026-07-15 — beneliya22 filing round)
+- **New category `גז`** (פזגז / `pazgas.invoice@printernet.co.il`).
+- **Vendor IDs learned:** Stripe sender = 0CodeKit (relyon AG, תוכנה) · `billing@exm.co.il` = Extra Mobile extra phone line (תוכנה) · `outgoing@out.cardcom.co.il` = business club (קורסים והכשרות).
+- **Income-exclusion rule:** numbered `notify@morning.co` invoices, `SharepointFlow@jdc.org` (JDC/Joint) docs, and numbered `info@benovation.co.il` docs are invoices Ben ISSUED = income, not expenses → never file.
+- **Skips (Ben):** funia = bank-transfer confirmation (not a receipt) · Wolt = not relevant · רו"ח לבקוביץ' = auto-documented by the accountant · 019 warning.
+- **Dedup:** invoice+receipt pairs (make/Stripe/exm) = one expense; same doc across both mailboxes = one row. Dedup key unchanged (`vendor + expense_month + amount + invoice_no`).
+- See `work/runs/2026-07-15-handoff-filing.md` for the full keep/exclude set with file IDs.
 
 ## 9. PERIOD-SPECIFIC NOTES (first run: May + June 2026)
 
