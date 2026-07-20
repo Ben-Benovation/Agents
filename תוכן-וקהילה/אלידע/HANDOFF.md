@@ -33,7 +33,14 @@
 7. טסט לפני שליחה: כפתור → Make (ארגון BenoVation) → Green API → **972507582857**.
 8. תמונות: יצירה ישירה מול Google AI Studio (Gemini image) בתוך התהליך, העלאה ל-`file_mm5ex900`, **בפלטת הלוגו (כחול/טורקיז — לא כתום)** + תמונת בן מהדרייב במקומות מתאימים. מתכון + פלטה: `brand-and-images.md`.
 
-## עדכון סשן 2026-07-20 (המשך — handoff-continuation)
+## עדכון סשן 2026-07-20 #2 — תיקון האוטומציה (monday דרך API)
+- 🧩 **שורש הבעיה אותר:** ה-Routine בגרסת fresh-session **לא נושא קונקטורי MCP** (המערכת מאשרת: "this trigger stores no MCP connectors"). לכן שתי ריצות בדיקה כתבו אפס טיוטות — לא עניין הרשאות, פשוט אין monday MCP בסשן אוטומטי. בנוסף, קבצי אלידע לא על main, אז סשן טרי גם לא קרא את נוהל התפקיד.
+- ✅ **הפתרון:** עבודה מול monday דרך ה-**REST/GraphQL API עם טוקן** (headless-safe). בן פתח את הרשת (Custom + `api.monday.com`) והוסיף `MONDAY_API_TOKEN` כ-env. **כל פעולות monday נבדקו ואומתו** (קריאת מקורות, יצירת פריט+עמודות, Doc+markdown, העלאת תמונה, התראה, מחיקה) — API-Version **2025-10**. מתכון: `monday-api-recipe.md`.
+- 🔁 **Routine חדש עצמאי:** `trig_01TyR5iw48Uv9cjSwj2aJhAS` — פרומפט self-contained (כל המתכון בתוכו, לא תלוי בריפו), monday דרך API, פלטה מתוקנת. הישן (MCP) נמחק.
+- ⏸️ **מושהה (disabled)** לבקשת בן עד אימות 100%. ריצת אימות נורתה (session cse_01NppXEAnF131oA55pXojZnC). כשתאושר — להפעיל: `update_trigger(trig_01TyR5iw48Uv9cjSwj2aJhAS, enabled:true)`.
+- ✅ **Gemini:** `GEMINI_API_KEY` מוגדר כ-env ומאומת — תמונות עובדות בריצה האוטומטית.
+
+## עדכון סשן 2026-07-20 #1 (handoff-continuation)
 - ✅ **תמונות עובדות.** מפתח Gemini התקבל מבן ונבדק — יצירת תמונה מקצה-לקצה הצליחה (מודל `gemini-3.1-flash-image`, פלטת הלוגו). המפתח נשמר **רק כמשתנה סביבה `GEMINI_API_KEY`** (לא ב-git). מתכון מלא: `brand-and-images.md`. `imagen-4.0` חסום (404) — לא להשתמש.
 - ✅ **פלטת מותג תוקנה** מכתום שגוי (#DD5326) ל**כחול/טורקיז** מהלוגו האמיתי: נייבי #16255F · כחול #1E75C0 · רויאל #2C5AE0 · טורקיז #38A9BC · לבן.
 - ⚠️ **Make עדיין חסום בסביבה הזו.** בן נתן מפתח API של Make (ארגון BenoVation), אבל: (א) מדיניות הרשת של הסביבה **חוסמת את make.com** (הפרוקסי מחזיר 403), אז אי אפשר להשתמש במפתח דרך curl; (ב) חיבור ה-Make MCP מחובר לחשבון אחר (רואה רק Hair Straightening House). **פתרון נדרש מבן:** או לחבר מחדש את קונקטור ה-Make ב-claude.ai לחשבון BenoVation, או לאפשר את make.com במדיניות הרשת של הסביבה.
