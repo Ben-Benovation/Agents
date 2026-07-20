@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__monday_com",
+      "mcp__Make",
+      "mcp__github",
+      "mcp__Google_Drive",
+      "Read", "Write", "Edit", "WebSearch", "WebFetch", "Skill",
+      "Bash(git add:*)", "Bash(git commit:*)", "Bash(git push:*)",
+      "Bash(git pull:*)", "Bash(git fetch:*)", "Bash(git checkout:*)"
+    ]
+  }
+}
