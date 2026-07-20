@@ -3,13 +3,13 @@
 """
 מחולל תמונה נלווית ממותגת ל-אלידע.
 צינור: דמות קבועה (mascot-reference.png) -> סצנת פוסט עקבית ב-Gemini ->
-הלבשת כותרת עברית (Rubik) + לוגו (assets/logo.png אם קיים).
+הדבקת לוגו (assets/logo.png אם קיים). ללא כותרת טקסט על התמונה.
 
 שימוש:
-  python3 make_post_image.py --headline "כותרת" --sub "תת-כותרת" \
-      --scene "תיאור סצנה באנגלית להמחשת הנושא" --out /path/out.png
+  python3 make_post_image.py --scene "תיאור סצנה באנגלית להמחשת הנושא" --out /path/out.png
+  (--headline / --sub מתקבלים לתאימות לאחור אך אינם מצוירים על התמונה)
 
-דרישות: GEMINI_API_KEY ב-env. Pillow + python-bidi (pip install Pillow python-bidi).
+דרישות: GEMINI_API_KEY ב-env. Pillow (pip install Pillow).
 """
 import os, sys, json, base64, argparse, urllib.request
 
@@ -34,7 +34,7 @@ def gen_scene(scene_desc, out_path):
         f"Clean gradient background in brand blues (navy {NAVY}, royal blue {ROYAL}) with "
         f"subtle glowing tech-circuit motifs and teal {TEAL} accents. Cinematic soft studio "
         "lighting, glossy clay render, premium advertising quality. Square 1:1. "
-        "Leave clean empty space in the UPPER THIRD for a headline. No text, no letters, no words."
+        "Well-balanced composition filling the frame. No text, no letters, no words."
     )
     parts = [{"inlineData": {"mimeType": "image/png", "data": ref}}, {"text": prompt}]
     body = json.dumps({"contents": [{"parts": parts}],
@@ -49,28 +49,13 @@ def gen_scene(scene_desc, out_path):
             return out_path
     raise RuntimeError("no image returned: " + json.dumps(d)[:300])
 
-def overlay(img_path, headline, sub, out_path):
-    """מלביש כותרת עברית + לוגו על הסצנה."""
-    from PIL import Image, ImageDraw, ImageFont
-    from bidi.algorithm import get_display
+def overlay(img_path, out_path):
+    """מדביק את הלוגו על הסצנה (ללא טקסט/כותרת)."""
+    from PIL import Image
     img = Image.open(img_path).convert("RGBA")
     W, H = img.size
-    d = ImageDraw.Draw(img)
 
-    def draw_center(text, y, size, fill):
-        f = ImageFont.truetype(FONT, size)
-        disp = get_display(text)
-        tw = d.textlength(disp, font=f)
-        x = (W - tw) / 2
-        d.text((x + 2, y + 2), disp, font=f, fill=(0, 0, 0, 160))   # צל לקריאוּת
-        d.text((x, y), disp, font=f, fill=fill)
-
-    if headline:
-        draw_center(headline, int(H * 0.055), int(H * 0.070), (56, 169, 188, 255))  # טורקיז
-    if sub:
-        draw_center(sub, int(H * 0.150), int(H * 0.050), (255, 255, 255, 255))
-
-    # לוגו בפינה תחתונה (אם קיים)
+    # לוגו בפינה שמאלית-תחתונה (אם קיים)
     if os.path.exists(LOGO):
         logo = Image.open(LOGO).convert("RGBA")
         lw = int(W * 0.24)
@@ -83,14 +68,14 @@ def overlay(img_path, headline, sub, out_path):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--headline", default="")
-    ap.add_argument("--sub", default="")
+    ap.add_argument("--headline", default="")   # מתקבל לתאימות לאחור; לא מצויר
+    ap.add_argument("--sub", default="")         # מתקבל לתאימות לאחור; לא מצויר
     ap.add_argument("--scene", required=True)
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     tmp = a.out + ".scene.png"
     gen_scene(a.scene, tmp)
-    overlay(tmp, a.headline, a.sub, a.out)
+    overlay(tmp, a.out)
     print("saved", a.out)
 
 if __name__ == "__main__":
