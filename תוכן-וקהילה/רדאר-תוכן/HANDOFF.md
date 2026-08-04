@@ -32,7 +32,37 @@
 ## ⚠️ חסם עיקרי — מדיניות רשת לסריקה
 - **build env (הסביבה הזו) חוסמת את מקורות הסריקה** (proxy 403): `hn.algolia.com`, `reddit.com`, `developer.monday.com`, `make.com`, `www.anthropic.com`. נגישים ממנה רק `raw.githubusercontent.com` ו-`api.monday.com`. ה-GitHub API scoped לריפו המוגדר (search חסום).
 - **המשמעות:** הכתיבה למאנדיי עובדת מכאן, אבל **הסריקה החיה לא יכולה לרוץ מסביבה זו.** הריצה הראשונה החיה + הריצות המתוזמנות צריכות סביבה עם **מדיניות רשת פתוחה** למארחי המקורות (Custom/Full + הוספת המארחים, כמו שנעשה לאלידע עם `api.monday.com`).
-- **פעולה נדרשת מבן:** לוודא שסביבת ה-Routine פתוחה למארחים ב-`sources.json`, ו-`MONDAY_API_TOKEN` מוגדר בה כ-env.
+- **פעולה נדרשת מבן:** לוודא שסביבת ה-Routine פתוחה למארחים ברשימה למטה, ו-`MONDAY_API_TOKEN` מוגדר בה כ-env.
+
+### allowlist מלא — כל המארחים (כולם HTTPS/443)
+**קבוצה A — ליבה (חובה):**
+| Host | למה | סטטוס בבנייה |
+| --- | --- | --- |
+| `api.monday.com` | כתיבה לבורד + dedupe | ✅ נגיש |
+| `raw.githubusercontent.com` | Claude Code CHANGELOG | ✅ נגיש |
+| `api.github.com` | ריפו בתאוצה + issues (ראה הערת GitHub) | ⚠️ מוגבל |
+
+**קבוצה B — מקורות סריקה (שכבה 0–1):**
+| Host | למה | סטטוס בבנייה |
+| --- | --- | --- |
+| `www.anthropic.com` | Anthropic News | ❌ חסום |
+| `docs.claude.com` | Claude/API release notes | ❌ חסום |
+| `docs.anthropic.com` | גיבוי release notes | ❌ חסום |
+| `hn.algolia.com` | Hacker News API | ❌ חסום |
+| `www.reddit.com` | Reddit (4 subs) | ❌ חסום |
+| `www.make.com` | Make release notes | ❌ חסום |
+| `developer.monday.com` | monday changelog | ❌ חסום |
+| `api.npmjs.org` | npm download trends | ✅ בד"כ נגיש |
+
+**קבוצה C — שכבה 2 (אופציונלי):**
+| Host | למה | סטטוס בבנייה |
+| --- | --- | --- |
+| `github.com` | MCP registry (modelcontextprotocol/servers) | ❌ חסום |
+| `simonwillison.net` | RSS | ❌ חסום |
+| `www.latent.space` | RSS (Latent Space) | ❌ חסום |
+
+⚠️ **הערת GitHub:** החסימה של `api.github.com` היא הגבלת Claude Code (הגישה scoped לריפו המוגדר), **לא** מדיניות הרשת — פתיחת רשת לבדה עשויה לא לפתוח חיפוש ריפואים רוחבי. fallback: curl ישיר ל-endpoint ציבורי או עמוד `github.com/trending`. לאמת בריצה הראשונה.
+מינימום להפעלה: קבוצות A+B. קבוצה C משדרגת כיסוי; הרוטינה מדלגת בשקט על מה שחסום.
 
 ## תזמון
 - **סטטוס: טרם נוצר — בכוונה.** ה-Routine לא נוצר עדיין כי הוא לא יכול לתפקד לפני שבן פותח את מדיניות הרשת בסביבת ה-Routine (מקורות הסריקה חסומים; ראה החסם למעלה). יצירה עכשיו הייתה מפיקה ריצות ריקות. הסדר הנכון: (1) בן פותח רשת + מגדיר `MONDAY_API_TOKEN` בסביבה → (2) ריצת אימות → (3) יצירת ה-Routine + הפעלה.
