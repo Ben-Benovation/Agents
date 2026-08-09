@@ -1,33 +1,40 @@
 {
   "_meta": {
     "agent": "רדאר תוכן",
-    "purpose": "מקורות הסריקה השבועית. מקור האמת שבן עורך. השדה last_verified מציין מתי ה-endpoint אומת לאחרונה כזמין ומחזיר נתונים.",
-    "window_days": 7,
-    "verification_note": "סביבת הבנייה (build env) חוסמת חלק מהמארחים במדיניות הרשת (proxy 403): hn.algolia.com, reddit.com, developer.monday.com, make.com, www.anthropic.com. רק raw.githubusercontent.com ו-api.monday.com נגישים ממנה. לכן מקורות עם last_verified=null צריכים אימות בסביבת ה-Routine (שדורשת מדיניות רשת פתוחה יותר). ראה HANDOFF.md.",
-    "last_reviewed": "2026-07-30"
+    "purpose": "מקורות הסריקה השבועית. מקור האמת שבן עורך. last_verified = מתי ה-endpoint אומת כזמין ומחזיר נתונים.",
+    "window_days": 14,
+    "verification_note": "אומת 2026-08-09 לאחר פתיחת הרשת. עובדים: hn.algolia.com, raw.githubusercontent.com (Claude Code CHANGELOG), docs.claude.com (עם redirect), developer.monday.com, api.npmjs.org, simonwillison.net, www.latent.space. חסומים ע\"י הגנות המקור עצמו (לא מדיניות הרשת של בן, ולכן allowlist לא יפתור): reddit.com, www.anthropic.com, docs.anthropic.com, www.make.com. חסום ע\"י scoping של Claude Code (לא רשת): api.github.com ו-github.com — חיפוש ריפו בתאוצה/issues לא זמין דרך ה-API בסשן מתוזמן. הרוטינה מדלגת בשקט על כל מה שחסום (fail quiet).",
+    "last_reviewed": "2026-08-09"
   },
   "sources": [
+    {
+      "id": "hn-algolia",
+      "name": "Hacker News (Algolia API)",
+      "layer": 1,
+      "type": "json_api",
+      "api": "https://hn.algolia.com/api/v1/search",
+      "queries": [
+        "?tags=story&query=claude&numericFilters=points>80,created_at_i>{two_weeks_ago_unix}",
+        "?tags=story&query=anthropic&numericFilters=points>80,created_at_i>{two_weeks_ago_unix}",
+        "?tags=story&query=mcp&numericFilters=points>80,created_at_i>{two_weeks_ago_unix}",
+        "?tags=story&query=agentic&numericFilters=points>80,created_at_i>{two_weeks_ago_unix}",
+        "?tags=show_hn&query=claude&numericFilters=points>50,created_at_i>{two_weeks_ago_unix}"
+      ],
+      "how": "פריטים מעל 80 נקודות (Show HN מעל 50). points גבוה = באזז. אות המקור החזק ביותר שעובד.",
+      "priority": "גבוה",
+      "last_verified": "2026-08-09",
+      "notes": "אומת ✅ — מחזיר תוצאות עשירות."
+    },
     {
       "id": "claude-code-changelog",
       "name": "Claude Code CHANGELOG",
       "layer": 0,
       "type": "raw_markdown",
       "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
-      "how": "משוך את הקובץ, קרא את הגרסאות שפורסמו ב-7 הימים האחרונים. עדכון כמעט יומי שאיש לא קורא.",
+      "how": "גרסאות מהשבועיים האחרונים. עדכון כמעט יומי שאיש לא קורא.",
       "priority": "גבוה",
-      "last_verified": "2026-07-30",
-      "notes": "אומת ✅ — גרסה אחרונה שנצפתה 2.1.220. נגיש גם מ-build env."
-    },
-    {
-      "id": "anthropic-news",
-      "name": "Anthropic News / Announcements",
-      "layer": 0,
-      "type": "html",
-      "url": "https://www.anthropic.com/news",
-      "how": "כותרות ההכרזות האחרונות; הצלב מול changelog.",
-      "priority": "גבוה",
-      "last_verified": null,
-      "notes": "build env: proxy 403. לאמת בסביבת ה-Routine."
+      "last_verified": "2026-08-09",
+      "notes": "אומת ✅ — גרסה אחרונה שנצפתה 2.1.226."
     },
     {
       "id": "claude-release-notes",
@@ -35,10 +42,77 @@
       "layer": 0,
       "type": "html",
       "url": "https://docs.claude.com/en/release-notes/overview",
-      "how": "שינויי API/דוקומנטציה מקדימים הכרזה.",
+      "how": "שינויי API/דוקומנטציה מקדימים הכרזה. עקוב אחרי redirect (301).",
+      "priority": "גבוה",
+      "last_verified": "2026-08-09",
+      "notes": "נגיש ✅ (301 → עקוב redirect). docs.anthropic.com חסום — השתמש ב-docs.claude.com."
+    },
+    {
+      "id": "monday-api-changelog",
+      "name": "monday.com API Changelog",
+      "layer": 0,
+      "type": "html",
+      "url": "https://developer.monday.com/api-reference/changelog",
+      "how": "עדכוני API/מוצר של monday.",
+      "priority": "בינוני",
+      "last_verified": "2026-08-09",
+      "notes": "אומת ✅ (HTTP 200)."
+    },
+    {
+      "id": "npm-downloads",
+      "name": "npm download trends",
+      "layer": 1,
+      "type": "json_api",
+      "api": "https://api.npmjs.org/downloads/point/last-week/{package}",
+      "how": "עלייה חדה בהורדות של חבילה קטנה = אות מוקדם לפני שיש פוסט.",
+      "priority": "בינוני",
+      "last_verified": "2026-08-09",
+      "notes": "אומת ✅ (HTTP 200)."
+    },
+    {
+      "id": "blog-simonwillison",
+      "name": "Simon Willison (RSS)",
+      "layer": 2,
+      "type": "rss",
+      "url": "https://simonwillison.net/atom/everything/",
+      "how": "מנתח לעומק Claude/MCP/agents לפני המיינסטרים; זווית מצוינת לסרטון.",
+      "priority": "גבוה",
+      "last_verified": "2026-08-09",
+      "notes": "אומת ✅ (HTTP 200)."
+    },
+    {
+      "id": "blog-latentspace",
+      "name": "Latent Space (RSS)",
+      "layer": 2,
+      "type": "rss",
+      "url": "https://www.latent.space/feed",
+      "how": "ניתוחי עומק + ראיונות; אותות מוקדמים.",
+      "priority": "בינוני",
+      "last_verified": "2026-08-09",
+      "notes": "אומת ✅ (HTTP 200)."
+    },
+    {
+      "id": "anthropic-news",
+      "name": "Anthropic News",
+      "layer": 0,
+      "type": "html",
+      "url": "https://www.anthropic.com/news",
+      "how": "כותרות ההכרזות האחרונות.",
       "priority": "גבוה",
       "last_verified": null,
-      "notes": "אמת את הנתיב המדויק בריצה הראשונה (docs.claude.com או docs.anthropic.com)."
+      "notes": "❌ חסום (403) ע\"י הגנת המקור עצמו — לא מדיניות הרשת. חלופה: הרבה מהכרזות אנתרופיק צפות ממילא ב-Hacker News."
+    },
+    {
+      "id": "reddit",
+      "name": "Reddit — r/ClaudeAI, r/mcp, r/LocalLLaMA, r/SideProject",
+      "layer": 1,
+      "type": "json_api",
+      "api": "https://www.reddit.com/r/{sub}/top.json?t=week&limit=15",
+      "subs": ["ClaudeAI", "mcp", "LocalLLaMA", "SideProject"],
+      "how": "הפוסטים המובילים של השבוע.",
+      "priority": "בינוני",
+      "last_verified": null,
+      "notes": "❌ חסום (403) — Reddit חוסם בקשות datacenter. דורש OAuth/טיפול מיוחד. הרוטינה מדלגת."
     },
     {
       "id": "make-release-notes",
@@ -49,109 +123,18 @@
       "how": "עדכוני מוצר של Make.",
       "priority": "בינוני",
       "last_verified": null,
-      "notes": "build env: proxy 403."
+      "notes": "❌ חסום (403) ע\"י הגנת המקור. לבדוק חלופה (RSS/דף אחר) בעתיד."
     },
     {
-      "id": "monday-api-changelog",
-      "name": "monday.com API Changelog",
-      "layer": 0,
-      "type": "html",
-      "url": "https://developer.monday.com/api-reference/changelog",
-      "how": "עדכוני API/מוצר של monday.",
-      "priority": "בינוני",
-      "last_verified": null,
-      "notes": "build env: proxy 403."
-    },
-    {
-      "id": "mcp-servers-registry",
-      "name": "MCP Servers Registry",
-      "layer": 0,
-      "type": "html",
-      "url": "https://github.com/modelcontextprotocol/servers",
-      "how": "שרתי MCP חדשים שנוספו השבוע (commits/PRs ל-README).",
-      "priority": "בינוני",
-      "last_verified": null,
-      "notes": "לאמת נתיב ה-registry הרשמי אם עבר ל-registry.modelcontextprotocol.io."
-    },
-    {
-      "id": "hn-algolia",
-      "name": "Hacker News (Algolia API)",
+      "id": "github-signals",
+      "name": "GitHub — repos בתאוצה + Claude Code issues",
       "layer": 1,
       "type": "json_api",
-      "api": "https://hn.algolia.com/api/v1/search",
-      "queries": [
-        "?tags=story&query=claude&numericFilters=points>100,created_at_i>{week_ago_unix}",
-        "?tags=story&query=anthropic&numericFilters=points>100,created_at_i>{week_ago_unix}",
-        "?tags=story&query=mcp&numericFilters=points>100,created_at_i>{week_ago_unix}",
-        "?tags=show_hn&query=claude&numericFilters=points>50,created_at_i>{week_ago_unix}"
-      ],
-      "how": "פריטים רלוונטיים מעל 100 נקודות (Show HN מעל 50). points גבוה = באזז.",
+      "api": "https://api.github.com/search/repositories , https://api.github.com/repos/anthropics/claude-code/issues",
+      "how": "star-velocity שבועי + issues מבוקשים.",
       "priority": "גבוה",
       "last_verified": null,
-      "notes": "build env: proxy 403. API ציבורי ללא טוקן."
-    },
-    {
-      "id": "github-trending-repos",
-      "name": "GitHub — repos בתאוצה (MCP/Claude/agents)",
-      "layer": 1,
-      "type": "json_api",
-      "api": "https://api.github.com/search/repositories",
-      "queries": [
-        "?q=mcp+created:>{month_ago}&sort=stars&order=desc&per_page=15",
-        "?q=claude+agent+pushed:>{week_ago}&sort=stars&order=desc&per_page=15"
-      ],
-      "how": "star-velocity חריג השבוע (לא סך כוכבים). ריפו קטן שקפץ = אות אמיתי.",
-      "priority": "גבוה",
-      "last_verified": null,
-      "notes": "בסביבות מסוימות ה-GitHub API scoped לריפו המוגדר (403 ל-search). לאמת בסביבת ה-Routine; אם חסום — לדלג (fail quiet)."
-    },
-    {
-      "id": "reddit-claudeai",
-      "name": "Reddit — r/ClaudeAI, r/mcp, r/LocalLLaMA, r/SideProject",
-      "layer": 1,
-      "type": "json_api",
-      "api": "https://www.reddit.com/r/{sub}/top.json?t=week&limit=15",
-      "subs": ["ClaudeAI", "mcp", "LocalLLaMA", "SideProject"],
-      "how": "הפוסטים המובילים של השבוע; upvotes גבוהים = באזז + מה שהקהילה שואלת.",
-      "priority": "בינוני",
-      "last_verified": null,
-      "notes": "build env: proxy 403 + reddit חוסם UA לא-דפדפני. להשתמש ב-User-Agent אמיתי."
-    },
-    {
-      "id": "npm-downloads",
-      "name": "npm download trends",
-      "layer": 1,
-      "type": "json_api",
-      "api": "https://api.npmjs.org/downloads/point/last-week/{package}",
-      "how": "עלייה חדה בהורדות של חבילה קטנה = אות מוקדם לפני שיש פוסט.",
-      "priority": "בינוני",
-      "last_verified": null,
-      "notes": "עקוב אחרי חבילות MCP/Claude רלוונטיות. api.npmjs.org בד\"כ ב-noProxy."
-    },
-    {
-      "id": "claude-code-issues",
-      "name": "Claude Code — Issues/Discussions הכי מבוקשים",
-      "layer": 2,
-      "type": "json_api",
-      "api": "https://api.github.com/repos/anthropics/claude-code/issues?sort=reactions-+1&state=open&per_page=15",
-      "how": "מה שמבקשים הכי הרבה = מה שיצא בעוד חודש; מה שמתלוננים עליו = נושא לסרטון פתרון.",
-      "priority": "בינוני",
-      "last_verified": null,
-      "notes": "endpoint scoped לריפו anthropics/claude-code — אמור לעבוד גם ב-envs מוגבלים."
-    },
-    {
-      "id": "blogs",
-      "name": "בלוגים של קוראי-קוד (Simon Willison, Latent Space)",
-      "layer": 2,
-      "type": "rss",
-      "feeds": [
-        "https://simonwillison.net/atom/everything/",
-        "https://www.latent.space/feed"
-      ],
-      "how": "מנתחים לעומק לפני שהמיינסטרים מבין; זווית טובה לסרטון.",
-      "priority": "בינוני",
-      "last_verified": null,
-      "notes": "RSS — לאמת נתיבי ה-feed בריצה הראשונה."
+      "notes": "❌ חסום (403) — הגבלת scoping של Claude Code על ה-GitHub API (לא רשת). חלופה עתידית: raw.githubusercontent לקבצים ספציפיים, או שירות trending חיצוני."
     }
   ]
 }
